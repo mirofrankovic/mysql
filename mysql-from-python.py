@@ -1,5 +1,4 @@
 import os
-import datetime
 import pymysql
 
 # Get username from Cloud9 workspace
@@ -15,10 +14,11 @@ connection = pymysql.connect(host='localhost',
 try:
     # Run a query
     with connection.cursor() as cursor:
-        cursor.execute("""Create Table if not exists
-                        Friends(name char(20), age int, DOB datetime); """)
-       # Note that the above will still display a error (not error) if the table
-       # olready exists
+        list_of_names = ['Bianka', 'bianka']
+        #Prepare a list with the same number of placeholders as a list_of_names
+        format_strings = ','.join(['%s']*len(list_of_names))
+        rows = cursor.execute("DELETE FROM Friends WHERE name in ({});".format(format_strings), list_of_names)
+        connection.commit()
 finally:
     # Close the connection, regardless of whether or not the above was successful
     connection.close()
